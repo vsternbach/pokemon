@@ -7,10 +7,10 @@ export default router
   // get all
   .get('/', pokemonCtrl.getAll)
   // get by id
-  .get('/:id', pokemonCtrl.getOne);
-// // create
-// .post("/api/pokemons", create)
-// // update
-// .put("/api/pokemons/:id", update)
-// // delete
-// .delete("/api/pokemons/:id", deleteOne);
+  .get('/:id', pokemonCtrl.getOne)
+  // create
+  .post('/', pokemonCtrl.create)
+  // update
+  .put('/:id', pokemonCtrl.update)
+  // delete
+  .delete('/:id', pokemonCtrl.deleteOne);
