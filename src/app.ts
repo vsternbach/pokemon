@@ -2,47 +2,27 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 import users from './users/db';
 import { sign, verify } from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
-import router from './pokemons/router';
+import pokemonRouter from './pokemons/router';
+import {ErrorCode} from "./error-codes";
+import userMiddleware from "./users/middleware";
+import userRouter from "./users/router";
 
 const app: Application = express();
-
 const port = 3000;
-const secret = 'secret';
 
 app.use(cookieParser());
 
-app.get('/auth', (req: Request, res: Response) => {
-  const { user, password } = req.query;
-  if (users.find((u) => u.user === user && u.password === password)) {
-    const token = sign({ user }, secret);
-    res.cookie('token', token);
-    res.send('ok');
-  } else {
-    throw 'Invalid user';
-  }
-});
+app.use('/', userRouter);
+app.use('/pokemon', userMiddleware, pokemonRouter);
 
-app.get('/protected', (req: Request, res: Response) => {
-  try {
-    const { token } = req.cookies;
-    if (verify(token, secret)) {
-      res.send('ok');
-    } else {
-      throw 'Unauthorized';
-    }
-  } catch (e) {
-    throw 'Server error';
+app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  switch (err as ErrorCode) {
+    case ErrorCode.Unauthorized:
+      res.status(403).send('User Unauthorized');
+      break;
+    default:
+      res.status(401).send('Unexpected error');
   }
-});
-
-app.use('/pokemon', router);
-
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if ((err as any) === 'pokemon not found') {
-    res.status(404).send(err);
-  }
-  res.status(500).send(err);
-  // next();
 });
 
 app.listen(port, function () {

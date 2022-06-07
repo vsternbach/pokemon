@@ -1,22 +1,18 @@
-import { Request, Response } from 'express';
-import pokemonService from './service';
+import {NextFunction, Request, Response} from 'express';
+import PokemonService from './service';
+import {ErrorCode} from "../error-codes";
 
-export class PokemonCtrl {
-  getAll(req: Request, res: Response) {
+export default class PokemonCtrl {
+  static getAll(req: Request, res: Response) {
     console.log(req.params);
-    res.json(pokemonService.getAll());
+    res.json(PokemonService.getAll());
   }
-  getOne(req: Request, res: Response) {
+  static getOne(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const pokemon = pokemonService.getOne(Number(id));
-    if (!pokemon) {
-      throw 'pokemon not found';
-    }
+    const pokemon = PokemonService.getOne(Number(id));
     res.send(pokemon);
   }
-  create(req: Request, res: Response) {}
-  update(req: Request, res: Response) {}
-  deleteOne(req: Request, res: Response) {}
+  static create(req: Request, res: Response) {}
+  static update(req: Request, res: Response) {}
+  static deleteOne(req: Request, res: Response) {}
 }
-
-export default new PokemonCtrl();

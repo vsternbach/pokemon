@@ -17,16 +17,19 @@ describe('Pokemon service', () => {
   });
 
   test('getOne - fail', () => {
-    try {
-      pokemonService.getOne(0);
-    } catch (e: any) {
-      expect(e.message).toEqual('Pokemon not found');
-    }
+    // try {
+    //   pokemonService.getOne(0);
+    // } catch (e: any) {
+    //   expect(e.message).toEqual('Pokemon not found');
+    // }
+    expect(() => {
+      pokemonService.getOne(0)
+    }).toThrow('Pokemon not found');
   });
 
   test('create', () => {
-    const mock: Pokemon = {
-      id: 100,
+    const mock = {
+      // id: 100,
       name: 'Groupix',
       hp: 17,
       cp: 8,
@@ -37,6 +40,7 @@ describe('Pokemon service', () => {
     const data = pokemonService.create(mock);
     expect(pokemons.length).toEqual(11);
     expect(data.name).toEqual('Groupix');
+    expect(data.id).toEqual(100);
   });
 
   test('update', () => {
